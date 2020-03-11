@@ -1,13 +1,16 @@
 ﻿# Read Me
 
-Quiz yourself on wordlists with the wozzol format use command `python quiz.py`, change the file name in the code for now.
+Quiz yourself on wordlists with the wozzol format (see <https://www.wozzol.nl/woordenlijsten).> use command `python console.py WORDLISTFILENAME`, where `WORDLISTFILENAME` is the name fo the file with the word list. The file can be placed anywhere in the directory.
 
 Format of wordlist is as follows:
 
 ``` bash
 SourceLanguage : TargetLanguage
 un momento = een ogenblik / een moment
+...
 ```
+
+## Format
 
 All non-alphanumeric characters are stripped
 
