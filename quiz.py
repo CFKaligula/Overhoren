@@ -1,9 +1,9 @@
-from sys import stdout
 from time import sleep
 import sys
 import os
-from abstract_quiz_unit import AbstractQuizUnit
+from random import shuffle
 import wozzol
+
 _ESCAPE_COMMAND = 'q()'
 
 
@@ -41,6 +41,8 @@ def perform_quiz(word_list):
     for entry in word_list:
         #  add all the words to the queue in the form of QueueEntries
         question_queue.append(QueueEntry(entry))
+    # shuffle the entries in the queue
+    shuffle(question_queue)
     while len(question_queue) > 0:
         top_question = question_queue[0]
         if top_question.ask_question():
@@ -59,7 +61,7 @@ def perform_quiz(word_list):
 class QueueEntry():
     def __init__(self, quiz_unit):
         self.quiz_unit = quiz_unit
-        self.times_asked = 0
+        self.times_asked = 0  # UNUSED
         self.times_answered_correctly = 0
         self.times_answered_incorrectly = 0
 
@@ -91,13 +93,3 @@ class QueueEntry():
             self.times_answered_incorrectly += 1
         self.times_asked += 1
         return result
-
-
-def main():
-    file_path = os.path.join('wozzol_wordlists', 'Portugees-raw.txt')
-    word_list = wozzol.convert_wozzol_list_to_word_list(file_path)
-    perform_quiz(word_list)
-
-
-if __name__ == "__main__":
-    main()

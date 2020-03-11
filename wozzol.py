@@ -7,9 +7,11 @@ def convert_wozzol_list_to_word_list(file_path):
     text_lines = text_file.readlines()
     word_list = []
     for line in text_lines:
+        # when we see a : that means it is the line that gives the source and target language of the word list
         if ':' in line:
             source_language = line.split(':')[0].strip()
             target_language = line.split(':')[1].strip()
+        # every line that contains an = will contain a word + its translation
         if '=' in line:
             word_list.append(WozzolQuizUnit(question=line.split('=', 1)[0].strip(),
                                             answer=line.split('=', 1)[1].strip(),
@@ -23,9 +25,11 @@ class WozzolQuizUnit(AbstractQuizUnit):
 
     def clean_input(self, input_string):
         processed_string = input_string
+        # remove brackets around words if they are [ ]
         if '[' in processed_string:
             processed_string = processed_string[processed_string.find(
                 "[")+1:processed_string.find("]")]
+        # remove brackets + words if they are ( )
         if '(' in processed_string:
             processed_string = processed_string.split('(')[0].strip()
         return ''.join(ch for ch in processed_string if ch.isalnum() or ch == ' ' or ch == '/')

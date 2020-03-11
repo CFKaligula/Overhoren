@@ -1,6 +1,6 @@
 ﻿# Read Me
 
-Quiz yourself on wordlists, currently only implemented with the with the wozzol format (see <https://www.wozzol.nl/woordenlijsten).> use command `python console.py WORDLISTFILENAME`, where `WORDLISTFILENAME` is the name of the file with the word list. The file can be placed anywhere in the directory.
+Quiz yourself on wordlists, currently only implemented with the with the wozzol format (see <https://www.wozzol.nl/woordenlijsten).> use command `python console.py WORDLISTFILENAME`, where `WORDLISTFILENAME` is the name of the file with the word list (you can leave out the file type extension). The file can be placed anywhere in the directory.
 
 To quit the quiz prematurely input q().
 To ask the word list in reverse, so from right to left instead of left to right, use the -r tag.
