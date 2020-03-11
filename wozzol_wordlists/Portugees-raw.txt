@@ -1,3 +1,4 @@
+wozzol
 Portugees : Nederlands
 [não], obrigado = [nee], dank je
 [sim], por favor = [ja], graag

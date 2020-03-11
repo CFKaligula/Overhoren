@@ -1,4 +1,5 @@
-﻿Spaans : Nederlands
+﻿wozzol
+Spaans : Nederlands
 en = in / op
 el / la = het / de (enkelvoud)
 los / las = de (meervoud)

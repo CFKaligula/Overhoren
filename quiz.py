@@ -2,54 +2,58 @@ from sys import stdout
 from time import sleep
 import sys
 import os
+from abstract_quiz_unit import AbstractQuizUnit
+import wozzol
+_ESCAPE_COMMAND = 'q()'
 
 
 def print_gradually(input_string):
-
     os.system('cls')
     for character in input_string:
         print(character, flush=True, end="")
         sleep(0.01)
 
 
-def convert_text_to_objects(file_path):
-    # format from https://www.wozzol.nl/woordenlijsten
-    text_file = open(file_path, encoding="utf-8",)
-    text_lines = text_file.readlines()
-    word_list = []
-    for line in text_lines:
-        if ':' in line:
-            source_language = line.split(':')[0].strip()
-            target_language = line.split(':')[1].strip()
-        if '=' in line:
-            word_list.append(QuizUnit(input_question=line.split('=', 1)[0].strip(),
-                                      input_answer=line.split('=', 1)[1].strip(),
-                                      source_language=source_language,
-                                      target_language=target_language
-                                      ))
-    return word_list
-
-
 def create_reverse_list(word_list):
     reverse_word_list = []
     for entry in word_list:
-        reverse_word_list.append(QuizUnit(entry.answer, entry.question))
+        reverse_word_list.append(type(entry)(question=entry.answer,
+                                             answer=entry.question,
+                                             source_language=entry.target_language,
+                                             target_language=entry.source_language
+                                             ))
+    return reverse_word_list
+
+
+def choose_converter(file_path):
+    word_list = None
+    if file_path or 'wozzol' in open(file_path, encoding="utf-8").readlines()[0]:
+        word_list = wozzol.convert_wozzol_list_to_word_list(file_path)
+    else:
+        print(open(file_path, encoding="utf-8").readlines()[0])
+        raise Exception(
+            'Unclear what type of word list is used')
+    return word_list
 
 
 def perform_quiz(word_list):
-    queue = []
+    question_queue = []
     for entry in word_list:
-        queue.append(QueueEntry(entry))
-    while len(queue) > 0:
-        top_question = queue[0]
+        #  add all the words to the queue in the form of QueueEntries
+        question_queue.append(QueueEntry(entry))
+    while len(question_queue) > 0:
+        top_question = question_queue[0]
         if top_question.ask_question():
-            # if the user answered the question correctly more than it was answered incorrectly we stop
+            # if the user answered the question correctly less than it was answered incorrectly
+            # or answered correctly less than 2 times we add it again to the end of the question_queue
             if top_question.times_answered_correctly < top_question.times_answered_incorrectly or top_question.times_answered_correctly < 2:
-                queue.insert(10, top_question)
+                question_queue.insert(len(question_queue), top_question)
         else:
-            queue.insert(2, top_question)
-            queue.insert(5, top_question)
-        queue.pop(0)
+            # if the question was answered incorrectly, we insert it at place 2 and 5 in the queue
+            question_queue.insert(2, top_question)
+            question_queue.insert(5, top_question)
+        # remove the top question from the stack
+        question_queue.pop(0)
 
 
 class QueueEntry():
@@ -64,13 +68,20 @@ class QueueEntry():
         print_gradually(
             f'What is the {self.quiz_unit.target_language} translation for the {self.quiz_unit.source_language} word "{self.quiz_unit.question}" \n')
         user_answer = input().strip()
-        if user_answer == 'q()':
+        # if the user (accidentally) pressed enter so the answer is empty, re-ask the question until there is an answer
+        while len(user_answer) == 0:
+            os.system('cls')
+            user_answer = input(
+                f'What is the {self.quiz_unit.target_language} translation for the {self.quiz_unit.source_language} word "{self.quiz_unit.question}" \n').strip()
+        # quit if the user pressed the escape command
+        if user_answer == _ESCAPE_COMMAND:
             sys.exit()
         if user_answer in self.quiz_unit.answers:
             other_correct_answers = [ans for ans in self.quiz_unit.answers if ans != user_answer]
-            print_gradually(
-                f'Correct, other correct answers were "{",".join(other_correct_answers)}"\n')
-            os.system("pause")
+            if len(other_correct_answers) > 0:
+                print_gradually(
+                    f'Correct, other correct answers were "{" or ".join(other_correct_answers)}"\n')
+                sleep(1)
             self.times_answered_correctly += 1
             result = True
         else:
@@ -82,46 +93,9 @@ class QueueEntry():
         return result
 
 
-class QuizUnit:
-    def __init__(self, input_question, input_answer, source_language=None, target_language=None):
-        self.question = input_question
-        self.answer = input_answer
-        self.source_language = source_language
-        self.target_language = target_language
-        self.answers = []
-        self.get_multiple_answers()
-        self.answer = self.clean_input(self.answer)
-        self.question = self.clean_input(self.question)
-
-    def clean_input(self, input_string):
-        processed_string = input_string
-        if '[' in processed_string:
-            processed_string = processed_string[processed_string.find(
-                "[")+1:processed_string.find("]")]
-        if '(' in processed_string:
-            processed_string = processed_string.split('(')[0].strip()
-        return ''.join(ch for ch in processed_string if ch.isalnum() or ch == ' ' or ch == '/')
-
-    def get_multiple_answers(self):
-        if '/' in self.answer:
-            word_in_brackets = None
-            if '[' in self.answer:
-                word_in_brackets = self.answer[self.answer.find("[")+1:self.answer.find("]")]
-            answer_list = self.answer.split('/')
-            for entry in answer_list:
-                if '[' in entry:
-                    entry = entry.split('[')[0].strip()
-                if '(' in entry:
-                    entry = entry.split('(')[0].strip()
-                self.answers.append(entry.strip()) if word_in_brackets is None else self.answers.append(
-                    f'{entry.strip()} {word_in_brackets}')
-        else:
-            self.answers.append(self.clean_input(self.answer))
-
-
 def main():
     file_path = os.path.join('wozzol_wordlists', 'Portugees-raw.txt')
-    word_list = convert_text_to_objects(file_path)
+    word_list = wozzol.convert_wozzol_list_to_word_list(file_path)
     perform_quiz(word_list)
 
 

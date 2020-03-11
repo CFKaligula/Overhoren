@@ -13,7 +13,15 @@ def _add_parser_category_quiz(subparsers):
     parser.add_argument(
         'file_path',
         type=str,
+        default='Spaans-raw.txt',
+        nargs='?',
         help='file_path')
+
+    parser.add_argument(
+        '-r',
+        '--reversed',
+        action='store_true',
+        help='whether the word list should be reversed')
 
 
 def _parse_arguments():
@@ -32,11 +40,15 @@ def _parse_arguments():
         listOfFiles = list()
         for (dirpath, dirnames, filenames) in os.walk(os.curdir):
             for file in filenames:
-                if file == args.file_path:
+                if file == args.file_path or file.split('.')[0] == args.file_path:
                     print(os.path.join(dirpath, file))
-                    word_list = quiz.convert_text_to_objects(os.path.join(dirpath, file))
+                    word_list = quiz.choose_converter(os.path.join(dirpath, file))
+                    if args.reversed:
+                        word_list = quiz.create_reverse_list(word_list)
                     quiz.perform_quiz(word_list)
-            #listOfFiles += [os.path.join(dirpath, file) for file in filenames]
+        else:
+            print('No file with this name was found')
+            print(args.file_path)
 
     return (args.command, args)
 
