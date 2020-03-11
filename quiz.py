@@ -4,10 +4,11 @@ import os
 
 
 def print_gradually(input_string):
+
+    os.system('cls')
     for character in input_string:
-        print(character, flush=True, end='')
+        print(character, flush=True, end="")
         sleep(0.01)
-    # print('\n')
 
 
 def convert_text_to_objects(file_path):
@@ -61,16 +62,18 @@ class QueueEntry():
         result = False
         print_gradually(
             f'What is the {self.quiz_unit.target_language} translation for the {self.quiz_unit.source_language} word "{self.quiz_unit.question}" \n')
-        user_answer = input()
+        user_answer = input().strip()
         if user_answer in self.quiz_unit.answers:
             other_correct_answers = [ans for ans in self.quiz_unit.answers if ans != user_answer]
             print_gradually(
                 f'Correct, other correct answers were "{",".join(other_correct_answers)}"\n')
+            os.system("pause")
             self.times_answered_correctly += 1
             result = True
         else:
             print_gradually(
                 f'Incorrect, the correct answer would be "{",".join(self.quiz_unit.answers)}"\n')
+            os.system("pause")
             self.times_answered_incorrectly += 1
         self.times_asked += 1
         return result
@@ -90,10 +93,10 @@ class QuizUnit:
     def clean_input(self, input_string):
         processed_string = input_string
         if '[' in processed_string:
-            processed_string = processed_string.split('[')[0].strip()
-        if '(' in processed_string:
             processed_string = processed_string[processed_string.find(
                 "[")+1:processed_string.find("]")]
+        if '(' in processed_string:
+            processed_string = processed_string.split('(')[0].strip()
         return ''.join(ch for ch in processed_string if ch.isalnum() or ch == ' ' or ch == '/')
 
     def get_multiple_answers(self):
@@ -119,4 +122,5 @@ def main():
     perform_quiz(word_list)
 
 
-main()
+if __name__ == "__main__":
+    main()
