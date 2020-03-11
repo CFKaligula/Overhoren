@@ -1,0 +1,6 @@
+﻿Spaans : Nederlands
+en = in / op
+el / la = het / de (enkelvoud)
+los / las = de (meervoud)
+el avión = het vliegtuig
+perdone / perdón = excuseer
