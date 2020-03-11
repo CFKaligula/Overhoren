@@ -1,5 +1,6 @@
 from sys import stdout
 from time import sleep
+import sys
 import os
 
 
@@ -63,6 +64,8 @@ class QueueEntry():
         print_gradually(
             f'What is the {self.quiz_unit.target_language} translation for the {self.quiz_unit.source_language} word "{self.quiz_unit.question}" \n')
         user_answer = input().strip()
+        if user_answer == 'q()':
+            sys.exit()
         if user_answer in self.quiz_unit.answers:
             other_correct_answers = [ans for ans in self.quiz_unit.answers if ans != user_answer]
             print_gradually(

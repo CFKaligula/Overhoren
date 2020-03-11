@@ -1,6 +1,10 @@
 ﻿# Read Me
 
-Quiz yourself on wordlists with the wozzol format (see <https://www.wozzol.nl/woordenlijsten).> use command `python console.py WORDLISTFILENAME`, where `WORDLISTFILENAME` is the name fo the file with the word list. The file can be placed anywhere in the directory.
+Quiz yourself on wordlists with the wozzol format (see <https://www.wozzol.nl/woordenlijsten).> use command `python console.py WORDLISTFILENAME`, where `WORDLISTFILENAME` is the name of the file with the word list. The file can be placed anywhere in the directory.
+
+To quit the quiz prematurely input q().
+
+## Format
 
 Format of wordlist is as follows:
 
@@ -9,8 +13,6 @@ SourceLanguage : TargetLanguage
 un momento = een ogenblik / een moment
 ...
 ```
-
-## Format
 
 All non-alphanumeric characters are stripped
 
