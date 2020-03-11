@@ -84,15 +84,16 @@ class QuizUnit:
         self.target_language = target_language
         self.answers = []
         self.get_multiple_answers()
-        self.answer = self.strip_non_alphanumeric(self.answer)
-        self.question = self.strip_non_alphanumeric(self.question)
+        self.answer = self.clean_input(self.answer)
+        self.question = self.clean_input(self.question)
 
-    def strip_non_alphanumeric(self, input_string):
+    def clean_input(self, input_string):
         processed_string = input_string
         if '[' in processed_string:
             processed_string = processed_string.split('[')[0].strip()
         if '(' in processed_string:
-            processed_string = processed_string.split('(')[0].strip()
+            processed_string = processed_string[processed_string.find(
+                "[")+1:processed_string.find("]")]
         return ''.join(ch for ch in processed_string if ch.isalnum() or ch == ' ' or ch == '/')
 
     def get_multiple_answers(self):
@@ -109,11 +110,11 @@ class QuizUnit:
                 self.answers.append(entry.strip()) if word_in_brackets is None else self.answers.append(
                     f'{entry.strip()} {word_in_brackets}')
         else:
-            self.answers.append(self.strip_non_alphanumeric(self.answer))
+            self.answers.append(self.clean_input(self.answer))
 
 
 def main():
-    file_path = os.path.join('wozzol_wordlists', 'Spaans-raw-test.txt')
+    file_path = os.path.join('wozzol_wordlists', 'Portugees-raw.txt')
     word_list = convert_text_to_objects(file_path)
     perform_quiz(word_list)
 
