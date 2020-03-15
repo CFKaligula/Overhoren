@@ -40,7 +40,8 @@ def _parse_arguments():
         for (dirpath, dirnames, filenames) in os.walk(os.curdir):
             for file in filenames:
                 if file == args.file_path or file.split('.')[0] == args.file_path:
-                    word_list = quiz.choose_converter(os.path.join(dirpath, file))
+                    word_list = quiz.choose_word_list_converter(os.path.join(dirpath, file))
+
                     if args.reversed:
                         word_list = quiz.create_reverse_list(word_list)
                     quiz.perform_quiz(word_list)

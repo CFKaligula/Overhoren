@@ -2,6 +2,7 @@ from time import sleep
 import sys
 import os
 from random import shuffle
+from abstract_quiz_unit import AbstractQuizUnit
 import wozzol
 
 _ESCAPE_COMMAND = 'q()'
@@ -17,15 +18,19 @@ def print_gradually(input_string):
 def create_reverse_list(word_list):
     reverse_word_list = []
     for entry in word_list:
-        reverse_word_list.append(type(entry)(question=entry.answer,
-                                             answer=entry.question,
-                                             source_language=entry.target_language,
-                                             target_language=entry.source_language
-                                             ))
+        if issubclass(AbstractQuizUnit, entry.__class__):
+            reverse_word_list.append(entry.__class__(question=entry.answer,
+                                                     answer=entry.question,
+                                                     source_language=entry.target_language,
+                                                     target_language=entry.source_language
+                                                     ))
+        else:
+            raise TypeError(
+                f"Entry must be a subclass of AbstractQuizUnit, but it was {entry.__class__}.")
     return reverse_word_list
 
 
-def choose_converter(file_path):
+def choose_word_list_converter(file_path):
     word_list = None
     if file_path or 'wozzol' in open(file_path, encoding="utf-8").readlines()[0]:
         word_list = wozzol.convert_wozzol_list_to_word_list(file_path)
@@ -37,6 +42,7 @@ def choose_converter(file_path):
 
 
 def perform_quiz(word_list):
+    create_reverse_list(word_list)
     question_queue = []
     for entry in word_list:
         #  add all the words to the queue in the form of QueueEntries
