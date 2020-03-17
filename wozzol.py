@@ -13,8 +13,8 @@ def convert_wozzol_list_to_word_list(file_path):
             target_language = line.split(':')[1].strip()
         # every line that contains an = will contain a word + its translation
         if '=' in line:
-            word_list.append(WozzolQuizUnit(question=line.split('=', 1)[0].strip(),
-                                            answer=line.split('=', 1)[1].strip(),
+            word_list.append(WozzolQuizUnit(question=line.split('=', 1)[0].strip().lower(),
+                                            answer=line.split('=', 1)[1].strip().lower(),
                                             source_language=source_language,
                                             target_language=target_language
                                             ))

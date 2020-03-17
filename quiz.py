@@ -3,8 +3,9 @@ import sys
 import os
 from random import shuffle
 from abstract_quiz_unit import AbstractQuizUnit
+from wozzol import WozzolQuizUnit
 import wozzol
-
+import shutil
 _ESCAPE_COMMAND = 'q()'
 
 
@@ -18,7 +19,7 @@ def print_gradually(input_string):
 def create_reverse_list(word_list):
     reverse_word_list = []
     for entry in word_list:
-        if issubclass(AbstractQuizUnit, entry.__class__):
+        if issubclass(entry.__class__, AbstractQuizUnit):
             reverse_word_list.append(entry.__class__(question=entry.answer,
                                                      answer=entry.question,
                                                      source_language=entry.target_language,
@@ -42,7 +43,6 @@ def choose_word_list_converter(file_path):
 
 
 def perform_quiz(word_list):
-    create_reverse_list(word_list)
     question_queue = []
     for entry in word_list:
         #  add all the words to the queue in the form of QueueEntries
@@ -83,13 +83,18 @@ class QueueEntry():
                 f'What is the {self.quiz_unit.target_language} translation for the {self.quiz_unit.source_language} word "{self.quiz_unit.question}" \n').strip()
         # quit if the user pressed the escape command
         if user_answer == _ESCAPE_COMMAND:
+            shutil.rmtree('1000lists')
+            os.makedirs('1000lists')
             sys.exit()
+
         if user_answer in self.quiz_unit.answers:
             other_correct_answers = [ans for ans in self.quiz_unit.answers if ans != user_answer]
             if len(other_correct_answers) > 0:
                 print_gradually(
                     f'Correct, other correct answers were "{" or ".join(other_correct_answers)}"\n')
-                sleep(1)
+            else:
+                print_gradually(f'***Correct*** (^O^)\n')
+                sleep(0.5)
             self.times_answered_correctly += 1
             result = True
         else:

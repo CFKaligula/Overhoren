@@ -2,6 +2,7 @@
 from argparse import ArgumentParser
 import os
 import quiz
+import download_list
 _COMMAND_QUIZ = 'quiz'
 
 
@@ -11,11 +12,11 @@ def _add_parser_category_quiz(subparsers):
     parser.set_defaults(command=_COMMAND_QUIZ)
 
     parser.add_argument(
-        'file_path',
+        'input',
         type=str,
         default='Spaans-raw.txt',
         nargs='?',
-        help='file_path')
+        help='input for the quiz, can be a file or a language')
 
     parser.add_argument(
         '-r',
@@ -37,17 +38,27 @@ def _parse_arguments():
 
     elif args.command == _COMMAND_QUIZ:
         # Get the list of all files in directory tree at given path
+        file_path = None
         for (dirpath, dirnames, filenames) in os.walk(os.curdir):
             for file in filenames:
-                if file == args.file_path or file.split('.')[0] == args.file_path:
-                    word_list = quiz.choose_word_list_converter(os.path.join(dirpath, file))
+                if file == args.input or file.split('.')[0] == args.input:
+                    file_path = os.path.join(dirpath, file)
+                    break
+            else:
+                continue  # only executed if the inner loop did NOT break
+            break
 
-                    if args.reversed:
-                        word_list = quiz.create_reverse_list(word_list)
-                    quiz.perform_quiz(word_list)
         else:
-            print('No file with this name was found')
-            print(args.file_path)
+            print(f'No file with the name {args.input} was found, trying to make word list..')
+            download_list.get_words_from_web_page(args.input)
+            file_path = os.path.join('1000lists', f'1000_most_common_words_{args.input}.txt')
+        if file_path:
+            word_list = quiz.choose_word_list_converter(file_path)
+            if args.reversed:
+                    word_list = quiz.create_reverse_list(word_list)
+            quiz.perform_quiz(word_list)
+        else:
+            print('Unable to create quiz')
 
     return (args.command, args)
 
