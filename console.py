@@ -39,7 +39,7 @@ def _parse_arguments():
     elif args.command == _COMMAND_QUIZ:
         # Get the list of all files in directory tree at given path
         file_path = None
-        for (dirpath, dirnames, filenames) in os.walk(os.curdir):
+        for (dirpath, _, filenames) in os.walk(os.curdir):
             for file in filenames:
                 if file == args.input or file.split('.')[0] == args.input:
                     file_path = os.path.join(dirpath, file)
@@ -55,7 +55,7 @@ def _parse_arguments():
         if file_path:
             word_list = quiz.choose_word_list_converter(file_path)
             if args.reversed:
-                    word_list = quiz.create_reverse_list(word_list)
+                word_list = quiz.create_reverse_list(word_list)
             quiz.perform_quiz(word_list)
         else:
             print('Unable to create quiz')

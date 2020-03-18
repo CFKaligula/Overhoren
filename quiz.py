@@ -67,7 +67,6 @@ def perform_quiz(word_list):
 class QueueEntry():
     def __init__(self, quiz_unit):
         self.quiz_unit = quiz_unit
-        self.times_asked = 0  # UNUSED
         self.times_answered_correctly = 0
         self.times_answered_incorrectly = 0
 
@@ -85,6 +84,7 @@ class QueueEntry():
         if user_answer == _ESCAPE_COMMAND:
             shutil.rmtree('1000lists')
             os.makedirs('1000lists')
+            os.system('cls')
             sys.exit()
 
         if user_answer in self.quiz_unit.answers:
@@ -102,5 +102,4 @@ class QueueEntry():
                 f'Incorrect, the correct answer would be "{",".join(self.quiz_unit.answers)}"\n')
             os.system("pause")
             self.times_answered_incorrectly += 1
-        self.times_asked += 1
         return result
