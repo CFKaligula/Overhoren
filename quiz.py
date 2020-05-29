@@ -82,8 +82,8 @@ class QueueEntry():
                 f'What is the {self.quiz_unit.target_language} translation for the {self.quiz_unit.source_language} word "{self.quiz_unit.question}" \n').strip()
         # quit if the user pressed the escape command
         if user_answer == _ESCAPE_COMMAND:
-            shutil.rmtree('1000lists')
-            os.makedirs('1000lists')
+            # shutil.rmtree('1000lists')
+            # os.makedirs('1000lists')
             os.system('cls')
             sys.exit()
 

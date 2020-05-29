@@ -50,8 +50,12 @@ def _parse_arguments():
 
         else:
             print(f'No file with the name {args.input} was found, trying to make word list..')
-            download_list.get_words_from_web_page(args.input)
             file_path = os.path.join('1000lists', f'1000_most_common_words_{args.input}.txt')
+            if not os.path.isfile(file_path):
+                print("Downloading word list...")
+                if not os.path.isdir('1000lists'):
+                    os.makedirs('1000lists')
+                download_list.get_words_from_web_page(args.input)
         if file_path:
             word_list = quiz.choose_word_list_converter(file_path)
             if args.reversed:
