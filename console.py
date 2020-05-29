@@ -55,14 +55,15 @@ def _parse_arguments():
                 print("Downloading word list...")
                 if not os.path.isdir('1000lists'):
                     os.makedirs('1000lists')
-                download_list.get_words_from_web_page(args.input)
-        if file_path:
-            word_list = quiz.choose_word_list_converter(file_path)
-            if args.reversed:
-                word_list = quiz.create_reverse_list(word_list)
-            quiz.perform_quiz(word_list)
-        else:
-            print('Unable to create quiz')
+                try:
+                    download_list.get_words_from_web_page(args.input)
+                except FileNotFoundError:
+                    pass
+
+        word_list = quiz.choose_word_list_converter(file_path)
+        if args.reversed:
+            word_list = quiz.create_reverse_list(word_list)
+        quiz.perform_quiz(word_list)
 
     return (args.command, args)
 
